@@ -11,6 +11,11 @@ return {
         defaults = {
           initial_mode = "normal",
         },
+        pickers = {
+            live_grep = {
+              initial_mode = "insert", -- Override only for live_grep
+            },
+        },
         extensions = {
           ["ui-select"] = {
             require("telescope.themes").get_dropdown({}),
