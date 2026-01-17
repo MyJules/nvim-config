@@ -7,6 +7,9 @@ vim.g.background = "light"
 
 vim.opt.swapfile = false
 
+-- Better terminal mode exit
+vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
+
 -- Navigate vim panes better
 vim.keymap.set('n', '<c-k>', ':wincmd k<CR>')
 vim.keymap.set('n', '<c-j>', ':wincmd j<CR>')
