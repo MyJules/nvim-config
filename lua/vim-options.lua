@@ -27,3 +27,7 @@ vim.diagnostic.config({
   signs = true,
   update_in_insert = false,
 })
+
+-- C++ header/implementation file switching
+local cpp_switch = require('cpp-switch')
+vim.keymap.set('n', '<leader>a', cpp_switch.switch_cpp_header, { desc = "Switch between .cpp and .h files" })
