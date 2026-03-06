@@ -32,7 +32,7 @@ return {
           },
         },
         lualine_b = {
-          { 'branch', icon = '', padding = { left = 2, right = 1 } },
+          { 'branch', icon = '', padding = { left = 1, right = 1 } },
           {
             'diff',
             symbols = { added = '+', modified = '~', removed = '-' },
@@ -58,20 +58,20 @@ return {
             sources = { 'nvim_lsp' },
             symbols = { error = 'E:', warn = 'W:', info = 'I:', hint = 'H:' },
             colored = true,
-            padding = { left = 2, right = 1 },
+            padding = { left = 1, right = 1 },
           },
           { 'encoding', padding = { left = 1, right = 1 } },
           {
             'filetype',
             icon_only = false,
-            padding = { left = 1, right = 2 },
+            padding = { left = 1, right = 1 },
           },
         },
         lualine_y = {
-          { 'progress', padding = { left = 2, right = 1 } },
+          { 'progress', padding = { left = 1, right = 1 } },
         },
         lualine_z = {
-          { 'location', padding = { left = 1, right = 2 } },
+          { 'location', padding = { left = 1, right = 1 } },
         },
       },
       inactive_sections = {
