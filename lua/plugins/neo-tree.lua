@@ -12,7 +12,7 @@ return {
 				indent = { indent_size = 2 },
 			},
 			window = {
-				width = 28,
+				width = 25,
 			},
 			filesystem = {
 				filtered_items = {
