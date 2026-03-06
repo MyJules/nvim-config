@@ -8,6 +8,12 @@ return {
 	},
 	config = function()
 		require("neo-tree").setup({
+			default_component_configs = {
+				indent = { indent_size = 2 },
+			},
+			window = {
+				width = 28,
+			},
 			filesystem = {
 				filtered_items = {
 					visible = true,
