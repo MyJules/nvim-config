@@ -5,7 +5,7 @@ function M.switch_cpp_header()
   local current_ext = vim.fn.expand('%:e')
   local filename = vim.fn.expand('%:t:r')
   local current_dir = vim.fn.expand('%:p:h')
-  
+
   -- Check if clangd is attached and try LSP method
   local clients = vim.lsp.get_clients({bufnr = 0})
   local has_clangd = false
@@ -15,17 +15,12 @@ function M.switch_cpp_header()
       break
     end
   end
-  
+
   if has_clangd then
-    local params = {uri = vim.uri_from_bufnr(0)}
-    vim.lsp.buf_request(0, 'textDocument/switchSourceHeader', params, function(err, result)
-      if not err and result and result ~= "" then
-        vim.cmd('edit ' .. vim.uri_to_fname(result))
-      else
-        -- Fallback if LSP doesn't find it
-        M.fallback_switch(current_ext, filename, current_dir)
-      end
-    end)
+    local ok = pcall(vim.cmd, 'LspClangdSwitchSourceHeader')
+    if not ok then
+      M.fallback_switch(current_ext, filename, current_dir)
+    end
   else
     M.fallback_switch(current_ext, filename, current_dir)
   end
