@@ -32,7 +32,7 @@ return {
           },
         },
         lualine_b = {
-          { 'branch', icon = '', padding = { left = 1, right = 1 } },
+          { 'branch', icon = '', padding = { left = 1, right = 2 } },
           {
             'diff',
             symbols = { added = '+', modified = '~', removed = '-' },
