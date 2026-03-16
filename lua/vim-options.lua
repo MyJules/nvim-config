@@ -21,6 +21,7 @@ vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" 
 
 vim.keymap.set('n', '<leader>h', ':nohlsearch<CR>')
 vim.wo.number = true
+vim.wo.signcolumn = "yes"
 
 vim.diagnostic.config({
   virtual_text = {},
