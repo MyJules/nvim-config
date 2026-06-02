@@ -1,12 +1,8 @@
-return {
-  {
-    "marko-cerovac/material.nvim",
-    lazy = false,
-    name = "material",
-    priority = 1000,
-    config = function()
-      vim.g.material_style = "darker"
-      vim.cmd.colorscheme "material"
-    end
-  }
-}
+local M = {}
+
+function M.setup()
+  vim.g.material_style = "darker"
+  vim.cmd.colorscheme("material")
+end
+
+return M

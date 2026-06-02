@@ -1,13 +1,11 @@
-return {
-  "nvim-treesitter/nvim-treesitter",
-  branch = "master",
-  lazy = false,
-  build = ":TSUpdate",
-  config = function()
-    require("nvim-treesitter.configs").setup({
-      ensure_installed = { "lua", "cpp", "zig" },
-      highlight = { enable = true },
-      indent = { enable = true },
-    })
-  end,
-}
+local M = {}
+
+function M.setup()
+  require("nvim-treesitter.configs").setup({
+    ensure_installed = { "lua", "cpp", "zig" },
+    highlight = { enable = true },
+    indent = { enable = true },
+  })
+end
+
+return M
