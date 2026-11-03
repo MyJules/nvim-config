@@ -5,31 +5,10 @@ local function github(repo)
 end
 
 local plugins = {
-  { src = github("marko-cerovac/material.nvim") },
-  { src = github("j-hui/fidget.nvim") },
-  { src = github("lewis6991/gitsigns.nvim") },
-  { src = github("hrsh7th/cmp-buffer") },
-  { src = github("L3MON4D3/LuaSnip") },
-  { src = github("saadparwaiz1/cmp_luasnip") },
-  { src = github("rafamadriz/friendly-snippets") },
-  { src = github("hrsh7th/nvim-cmp") },
-  { src = github("nvim-telescope/telescope-ui-select.nvim") },
+  { src = github("catppuccin/nvim"), name = "catppuccin" },
+  { src = github("nvim-tree/nvim-tree.lua") },
   { src = github("nvim-lua/plenary.nvim") },
-  { src = github("nvim-telescope/telescope.nvim"), version = "0.1.5" },
-  { src = github("nvim-neo-tree/neo-tree.nvim"), version = "v3.x" },
-  { src = github("nvim-tree/nvim-web-devicons") },
-  { src = github("MunifTanjim/nui.nvim") },
-  { src = github("nvim-lualine/lualine.nvim") },
-}
-
-local config_modules = {
-  "plugins.material",
-  "plugins.fidget",
-  "plugins.gitsigns",
-  "plugins.completions",
-  "plugins.telescope",
-  "plugins.neo-tree",
-  "plugins.lualine",
+  { src = github("nvim-telescope/telescope.nvim"), version = "v0.2.2" },
 }
 
 function M.setup()
@@ -38,9 +17,9 @@ function M.setup()
     load = true,
   })
 
-  for _, module_name in ipairs(config_modules) do
-    require(module_name).setup()
-  end
+  require("theme").setup()
+  require("plugins.nvim-tree").setup()
+  require("plugins.telescope").setup()
 end
 
 return M
