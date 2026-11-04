@@ -1,21 +1,14 @@
 local M = {}
 
 function M.setup()
-  require("catppuccin").setup({
-    flavour = "mocha",
-    term_colors = true,
-    integrations = {
-      nvimtree = true,
-      telescope = { enabled = true },
+  vim.g.material_style = "darker"
+  require("material").setup({
+    plugins = { "nvim-tree", "telescope" },
+    contrast = {
+      floating_windows = true,
     },
-    custom_highlights = function(colors)
-      return {
-        FloatBorder = { fg = colors.surface2, bg = colors.mantle },
-        NormalFloat = { fg = colors.text, bg = colors.mantle },
-      }
-    end,
   })
-  vim.cmd.colorscheme("catppuccin")
+  vim.cmd.colorscheme("material")
 end
 
 return M

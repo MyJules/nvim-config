@@ -5,7 +5,7 @@ local function github(repo)
 end
 
 local plugins = {
-  { src = github("catppuccin/nvim"), name = "catppuccin" },
+  { src = github("marko-cerovac/material.nvim") },
   { src = github("nvim-tree/nvim-tree.lua") },
   { src = github("nvim-lua/plenary.nvim") },
   { src = github("nvim-telescope/telescope.nvim"), version = "v0.2.2" },
