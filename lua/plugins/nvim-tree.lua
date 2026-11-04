@@ -3,13 +3,46 @@ local M = {}
 function M.setup()
   require("nvim-tree").setup({
     hijack_netrw = false,
-    view = { width = 30 },
+    view = {
+      width = 34,
+      signcolumn = "no",
+    },
     renderer = {
       group_empty = true,
+      root_folder_label = ":t",
+      add_trailing = true,
+      highlight_git = "name",
+      highlight_opened_files = "name",
+      highlight_modified = "name",
+      indent_markers = {
+        enable = true,
+        icons = {
+          corner = "`",
+          edge = "|",
+          item = "|",
+          bottom = "-",
+          none = " ",
+        },
+      },
       icons = {
-        show = { file = false, folder = false, folder_arrow = true, git = false },
+        web_devicons = {
+          file = { enable = false },
+          folder = { enable = false },
+        },
+        symlink_arrow = " -> ",
+        show = {
+          file = false,
+          folder = false,
+          folder_arrow = false,
+          git = false,
+          modified = false,
+          hidden = false,
+          diagnostics = false,
+          bookmarks = false,
+        },
       },
     },
+    modified = { enable = true },
     filters = { dotfiles = false },
     update_focused_file = { enable = true },
   })
