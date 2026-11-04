@@ -17,7 +17,6 @@ opt.scrolloff = 6
 opt.showmode = false
 opt.laststatus = 3
 opt.showtabline = 0
-opt.statusline = " %f %m%r%=%y  %l:%c "
 opt.mouse = "a"
 opt.fillchars:append({ eob = " " })
 opt.splitright = true

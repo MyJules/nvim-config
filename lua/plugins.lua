@@ -9,6 +9,7 @@ local plugins = {
   { src = github("nvim-tree/nvim-tree.lua") },
   { src = github("nvim-lua/plenary.nvim") },
   { src = github("nvim-telescope/telescope.nvim"), version = "v0.2.2" },
+  { src = github("nvim-lualine/lualine.nvim") },
 }
 
 function M.setup()
@@ -18,6 +19,7 @@ function M.setup()
   })
 
   require("theme").setup()
+  require("plugins.lualine").setup()
   require("plugins.nvim-tree").setup()
   require("plugins.telescope").setup()
 end
