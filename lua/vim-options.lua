@@ -44,7 +44,7 @@ vim.keymap.set("n", "<S-h>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
 vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Close buffer" })
 
 vim.diagnostic.config({
-  virtual_text = false,
+  virtual_text = true,
   signs = true,
   underline = true,
   severity_sort = true,
@@ -53,3 +53,10 @@ vim.diagnostic.config({
 })
 
 vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, { desc = "Line diagnostics" })
+
+vim.api.nvim_create_autocmd("LspAttach", {
+  group = vim.api.nvim_create_augroup("LspKeymaps", { clear = true }),
+  callback = function(event)
+    vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = event.buf, desc = "Go to definition" })
+  end,
+})
