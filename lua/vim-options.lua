@@ -17,6 +17,10 @@ opt.scrolloff = 6
 opt.showmode = false
 opt.laststatus = 3
 opt.showtabline = 0
+opt.completeopt = { "menu", "menuone", "noinsert", "noselect" }
+opt.pumheight = 10
+opt.pumwidth = 8
+opt.pummaxwidth = 60
 opt.mouse = "a"
 opt.fillchars:append({ eob = " " })
 opt.splitright = true
@@ -57,6 +61,15 @@ vim.keymap.set("n", "<leader>d", vim.diagnostic.open_float, { desc = "Line diagn
 vim.api.nvim_create_autocmd("LspAttach", {
   group = vim.api.nvim_create_augroup("LspKeymaps", { clear = true }),
   callback = function(event)
+    local client = vim.lsp.get_client_by_id(event.data.client_id)
+    if client and client:supports_method("textDocument/completion", event.buf) then
+      vim.lsp.completion.enable(true, client.id, event.buf, { autotrigger = true })
+      vim.keymap.set("i", "<C-Space>", vim.lsp.completion.get, {
+        buffer = event.buf,
+        desc = "Trigger completion",
+      })
+    end
+
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = event.buf, desc = "Go to definition" })
   end,
 })
