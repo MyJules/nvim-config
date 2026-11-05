@@ -18,6 +18,7 @@ opt.showmode = false
 opt.laststatus = 3
 opt.showtabline = 0
 opt.completeopt = { "menu", "menuone", "noinsert", "noselect" }
+opt.pumborder = "rounded"
 opt.pumheight = 10
 opt.pumwidth = 8
 opt.pummaxwidth = 60
