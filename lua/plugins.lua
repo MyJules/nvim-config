@@ -12,6 +12,7 @@ local plugins = {
   { src = github("nvim-lualine/lualine.nvim") },
   { src = github("akinsho/bufferline.nvim"), version = "v4.9.1" },
   { src = github("nvim-mini/mini.bufremove") },
+  { src = github("nvim-mini/mini.starter") },
 }
 
 function M.setup()
@@ -25,6 +26,7 @@ function M.setup()
   require("plugins.bufferline").setup()
   require("plugins.nvim-tree").setup()
   require("plugins.telescope").setup()
+  require("plugins.starter").setup()
 end
 
 return M
