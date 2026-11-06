@@ -37,6 +37,16 @@ vim.opt.exrc = true
 -- Better terminal mode exit
 vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]])
 
+vim.keymap.set("i", "<CR>", function()
+  if vim.fn.pumvisible() == 1 then
+    if vim.fn.complete_info({ "selected" }).selected >= 0 then
+      return "<C-y>"
+    end
+    return "<C-e><CR>"
+  end
+  return "<CR>"
+end, { expr = true, desc = "Accept selected completion or insert newline" })
+
 -- Navigate vim panes better
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Focus upper split" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Focus lower split" })
