@@ -16,9 +16,21 @@
       "rev": "69eb0c34ed3d836d5a0d92d913b77dd73b054f2f",
       "src": "https://github.com/nvim-tree/nvim-tree.lua"
     },
+    "nvim-treesitter": {
+      "rev": "915f2bd3d4e2a33704bfc476b5137e9befa82f3d",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter"
+    },
+    "outline.nvim": {
+      "rev": "03ce1482222dc2bf1f781559508301f05382936d",
+      "src": "https://github.com/hedyhli/outline.nvim"
+    },
     "plenary.nvim": {
       "rev": "74b06c6c75e4eeb3108ec01852001636d85a932b",
       "src": "https://github.com/nvim-lua/plenary.nvim"
+    },
+    "rainbow-delimiters.nvim": {
+      "rev": "65734f76783705255d9ede8a6e4692e1572801a5",
+      "src": "https://github.com/HiPhish/rainbow-delimiters.nvim"
     },
     "telescope.nvim": {
       "rev": "5255aa27c422de944791318024167ad5d40aad20",
