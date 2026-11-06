@@ -53,6 +53,10 @@
       "rev": "65734f76783705255d9ede8a6e4692e1572801a5",
       "src": "https://github.com/HiPhish/rainbow-delimiters.nvim"
     },
+    "startup.nvim": {
+      "rev": "bd835f4fd95dbb30cb4607a8d7a090216fb6d035",
+      "src": "https://github.com/startup-nvim/startup.nvim"
+    },
     "telescope.nvim": {
       "rev": "5255aa27c422de944791318024167ad5d40aad20",
       "src": "https://github.com/nvim-telescope/telescope.nvim",
