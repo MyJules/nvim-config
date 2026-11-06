@@ -16,7 +16,7 @@ opt.cursorline = true
 opt.scrolloff = 6
 opt.showmode = false
 opt.laststatus = 3
-opt.showtabline = 0
+opt.showtabline = 2
 opt.completeopt = { "menu", "menuone", "noinsert", "noselect" }
 opt.pumborder = "rounded"
 opt.pumheight = 10
@@ -44,9 +44,11 @@ vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Focus left split" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Focus right split" })
 
 vim.keymap.set("n", "<leader>h", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
-vim.keymap.set("n", "<S-l>", "<cmd>bnext<CR>", { desc = "Next buffer" })
-vim.keymap.set("n", "<S-h>", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
-vim.keymap.set("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Close buffer" })
+vim.keymap.set("n", "<S-l>", "<cmd>BufferLineCycleNext<CR>", { desc = "Next file tab" })
+vim.keymap.set("n", "<S-h>", "<cmd>BufferLineCyclePrev<CR>", { desc = "Previous file tab" })
+vim.keymap.set("n", "<leader>bd", function()
+  require("plugins.bufferline").close()
+end, { desc = "Close file tab without closing splits" })
 
 vim.diagnostic.config({
   virtual_text = true,

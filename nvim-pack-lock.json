@@ -1,5 +1,10 @@
 {
   "plugins": {
+    "bufferline.nvim": {
+      "rev": "655133c3b4c3e5e05ec549b9f8cc2894ac6f51b3",
+      "src": "https://github.com/akinsho/bufferline.nvim",
+      "version": "'v4.9.1'"
+    },
     "catppuccin": {
       "rev": "edefef779ab08ce1a4a404713e3012b0d202bd35",
       "src": "https://github.com/catppuccin/nvim"
@@ -11,6 +16,10 @@
     "material.nvim": {
       "rev": "92f7366a9315cd386bc4fa4d716fde375dda210f",
       "src": "https://github.com/marko-cerovac/material.nvim"
+    },
+    "mini.bufremove": {
+      "rev": "6e9c563cb71a8e4d57c4fb4089eb90a3bf3e8851",
+      "src": "https://github.com/nvim-mini/mini.bufremove"
     },
     "nvim-tree.lua": {
       "rev": "69eb0c34ed3d836d5a0d92d913b77dd73b054f2f",

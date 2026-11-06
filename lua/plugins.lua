@@ -10,6 +10,8 @@ local plugins = {
   { src = github("nvim-lua/plenary.nvim") },
   { src = github("nvim-telescope/telescope.nvim"), version = "v0.2.2" },
   { src = github("nvim-lualine/lualine.nvim") },
+  { src = github("akinsho/bufferline.nvim"), version = "v4.9.1" },
+  { src = github("nvim-mini/mini.bufremove") },
 }
 
 function M.setup()
@@ -20,6 +22,7 @@ function M.setup()
 
   require("theme").setup()
   require("plugins.lualine").setup()
+  require("plugins.bufferline").setup()
   require("plugins.nvim-tree").setup()
   require("plugins.telescope").setup()
 end
