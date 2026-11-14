@@ -40,7 +40,17 @@ opt.pumwidth = 8
 opt.pummaxwidth = 60
 opt.winborder = "rounded"
 opt.mouse = "a"
-opt.fillchars:append({ eob = " " })
+opt.fillchars:append({ eob = " ", diff = "╱" })
+-- Better diffs: histogram algorithm, align moved/similar lines, highlight changed words.
+opt.diffopt = {
+  "internal",
+  "filler",
+  "closeoff",
+  "indent-heuristic",
+  "algorithm:histogram",
+  "linematch:200",
+  "inline:word",
+}
 opt.splitright = true
 opt.splitbelow = true
 opt.ignorecase = true

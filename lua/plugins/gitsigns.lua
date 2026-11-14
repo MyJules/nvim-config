@@ -56,6 +56,16 @@ function M.setup()
       end, "Blame line")
       map("n", "<leader>gB", gs.toggle_current_line_blame, "Toggle inline blame")
       map("n", "<leader>gd", gs.diffthis, "Diff against index")
+      map("n", "<leader>gi", gs.preview_hunk_inline, "Preview hunk inline")
+      map("n", "<leader>gw", function()
+        -- Inline review mode: show deleted lines and word-level changes in the buffer.
+        gs.toggle_word_diff()
+        gs.toggle_deleted()
+        gs.toggle_linehl()
+      end, "Toggle inline diff")
+      map("n", "<leader>gq", function()
+        gs.setqflist("all")
+      end, "All hunks to quickfix")
 
       map({ "o", "x" }, "ih", gs.select_hunk, "Inside git hunk")
     end,
