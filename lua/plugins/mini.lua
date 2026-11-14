@@ -39,13 +39,22 @@ function M.setup()
     draw = { delay = 50, animation = require("mini.indentscope").gen_animation.none() },
     options = { try_as_border = true },
   })
+  local disabled_ft = { "help", "NvimTree", "snacks_dashboard", "trouble", "noice", "TelescopePrompt", "TelescopeResults" }
   vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("IndentScopeDisable", { clear = true }),
-    pattern = { "help", "NvimTree", "snacks_dashboard", "trouble", "noice", "TelescopePrompt", "TelescopeResults" },
+    pattern = disabled_ft,
     callback = function(event)
       vim.b[event.buf].miniindentscope_disable = true
     end,
   })
+  -- This runs deferred, so buffers like the dashboard already got their FileType
+  -- before the autocmd above existed: disable it for them now.
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.tbl_contains(disabled_ft, vim.bo[buf].filetype) or vim.bo[buf].buftype == "terminal" then
+      vim.b[buf].miniindentscope_disable = true
+    end
+  end
+  MiniIndentscope.undraw()
   vim.api.nvim_create_autocmd("TermOpen", {
     group = vim.api.nvim_create_augroup("IndentScopeDisableTerm", { clear = true }),
     callback = function(event)

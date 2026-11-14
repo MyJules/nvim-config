@@ -26,6 +26,17 @@ function M.setup()
       hl.SnacksDashboardFooter = { fg = c.fg_dark }
       hl.SnacksDashboardSpecial = { fg = c.cyan }
       hl.MiniIndentscopeSymbol = { fg = c.blue5 }
+      -- Command line popup (noice).
+      hl.NoiceCmdlinePopup = { fg = c.fg, bg = c.bg_dark }
+      hl.NoiceCmdlinePopupBorder = { fg = c.blue, bg = c.bg_dark }
+      hl.NoiceCmdlinePopupTitle = { fg = c.bg_dark, bg = c.blue, bold = true }
+      hl.NoiceCmdlineIcon = { fg = c.orange }
+      hl.NoiceCmdlinePopupBorderSearch = { fg = c.yellow, bg = c.bg_dark }
+      hl.NoiceCmdlineIconSearch = { fg = c.yellow }
+      hl.NoiceCmdlinePopupBorderLua = { fg = c.magenta, bg = c.bg_dark }
+      hl.NoiceCmdlineIconLua = { fg = c.magenta }
+      hl.NoiceCmdlinePopupBorderFilter = { fg = c.green, bg = c.bg_dark }
+      hl.NoiceCmdlineIconFilter = { fg = c.green }
     end,
   })
   vim.cmd.colorscheme("tokyonight")
