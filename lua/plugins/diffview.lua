@@ -23,22 +23,8 @@ local function refresh_diffview()
   end
 end
 
--- Run a git command in the background and report the result.
-local function git_async(args, label)
-  vim.notify(label .. "...")
-  git(args, function(res)
-    vim.schedule(function()
-      local out = vim.trim((res.stderr or "") .. "\n" .. (res.stdout or ""))
-      if res.code == 0 then
-        vim.notify(label .. " done" .. (out ~= "" and (": " .. (out:match("[^\n]+$") or "")) or ""))
-      else
-        vim.notify(label .. " failed:\n" .. out, vim.log.levels.ERROR)
-      end
-      refresh_diffview()
-    end)
-  end)
-end
-
+-- Commit from the diffview file panel (cc / ca), so review → stage → commit
+-- happens without leaving the review. Everything else git: lazygit (<leader>gg).
 -- Ask for a message and commit what is staged. With `amend`, rewrite the last commit.
 function M.commit(amend)
   local staged = git({ "diff", "--cached", "--quiet" }):wait()
@@ -75,27 +61,6 @@ function M.commit(amend)
       end)
     end)
   end)
-end
-
-local function has_upstream()
-  return git({ "rev-parse", "--abbrev-ref", "@{upstream}" }):wait().code == 0
-end
-
-function M.push()
-  -- First push of a new branch: set its upstream automatically.
-  git_async(has_upstream() and { "push" } or { "push", "-u", "origin", "HEAD" }, "Push")
-end
-
-function M.pull()
-  git_async({ "pull", "--ff-only" }, "Pull")
-end
-
-function M.unpushed()
-  if not has_upstream() then
-    vim.notify("Branch has no upstream yet (push it first)", vim.log.levels.WARN)
-    return
-  end
-  vim.cmd("DiffviewFileHistory --range=@{upstream}..HEAD")
 end
 
 -- Neovim inherits PATH from whatever launched it, so a freshly installed lazygit
@@ -168,11 +133,6 @@ function M.setup()
   map("n", "<leader>gh", "<Cmd>DiffviewFileHistory %<CR>", { desc = "File history" })
   map("n", "<leader>gH", "<Cmd>DiffviewFileHistory<CR>", { desc = "Repo history" })
   map("x", "<leader>gh", ":DiffviewFileHistory<CR>", { desc = "History of selection" })
-  map("n", "<leader>gc", function() M.commit(false) end, { desc = "Commit staged" })
-  map("n", "<leader>gC", function() M.commit(true) end, { desc = "Amend last commit" })
-  map("n", "<leader>gP", M.push, { desc = "Push" })
-  map("n", "<leader>gF", M.pull, { desc = "Pull (fast-forward only)" })
-  map("n", "<leader>gl", M.unpushed, { desc = "Unpushed commits" })
   -- lazygit in a float (snacks): rebase, branches, stash, cherry-pick, conflicts.
   map("n", "<leader>gg", function() M.lazygit() end, { desc = "Lazygit" })
   map("n", "<leader>gL", function() M.lazygit("log_file") end, { desc = "Lazygit file log" })

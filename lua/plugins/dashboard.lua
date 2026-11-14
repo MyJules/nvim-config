@@ -28,6 +28,7 @@ local tips = {
   { "<Space>xx", "list all diagnostics" },
   { "<Space>qs", "restore this folder's session" },
   { "<Space>gp", "preview the git hunk under the cursor" },
+  { "<Space>gg", "lazygit: branches, rebase, stash, push" },
   { "<Space>ls", "switch between source and header" },
   { "<Space>fc", "preview colorschemes" },
   { "sa iw )", "surround a word with parentheses" },
