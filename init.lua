@@ -1,4 +1,7 @@
-require("vim-options")
-require("plugins").setup()
+vim.loader.enable()
 
-vim.lsp.enable("clangd")
+require("options")
+require("keymaps")
+require("autocmds")
+require("plugins").setup()
+require("lsp")

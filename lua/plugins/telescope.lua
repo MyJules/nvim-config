@@ -1,7 +1,8 @@
 local M = {}
 
 function M.setup()
-  require("telescope").setup({
+  local telescope = require("telescope")
+  telescope.setup({
     defaults = {
       initial_mode = "normal",
       prompt_prefix = " > ",
@@ -15,40 +16,30 @@ function M.setup()
         include_current_session = false,
         prompt_title = "Recent files",
       },
-      live_grep = {
-        initial_mode = "insert",
-      },
+      live_grep = { initial_mode = "insert" },
+      help_tags = { initial_mode = "insert" },
+      lsp_document_symbols = { initial_mode = "insert" },
+    },
+    extensions = {
+      fzf = {},
     },
   })
-
-  vim.api.nvim_create_autocmd("BufEnter", {
-    group = vim.api.nvim_create_augroup("RecentFiles", { clear = true }),
-    callback = function(event)
-      if vim.bo[event.buf].buftype ~= "" then
-        return
-      end
-
-      local file = vim.api.nvim_buf_get_name(event.buf)
-      if vim.fn.filereadable(file) ~= 1 then
-        return
-      end
-
-      local key = function(path)
-        return vim.fs.normalize(path):lower()
-      end
-      local recent = vim.tbl_filter(function(path)
-        return key(path) ~= key(file)
-      end, vim.v.oldfiles)
-      table.insert(recent, 1, file)
-      vim.v.oldfiles = recent
-    end,
-  })
+  -- Native fzf sorter; built by the PackChanged hook in plugins.lua.
+  pcall(telescope.load_extension, "fzf")
 
   local builtin = require("telescope.builtin")
-  vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
-  vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Search text" })
-  vim.keymap.set("n", "<leader>fb", builtin.buffers, { desc = "Find open buffers" })
-  vim.keymap.set("n", "<leader><leader>", builtin.oldfiles, { desc = "Recent files" })
+  local map = vim.keymap.set
+  map("n", "<leader>ff", builtin.find_files, { desc = "Find files" })
+  map("n", "<leader>fg", builtin.live_grep, { desc = "Search text" })
+  map({ "n", "x" }, "<leader>fw", builtin.grep_string, { desc = "Search word/selection" })
+  map("n", "<leader>fb", builtin.buffers, { desc = "Find open buffers" })
+  map("n", "<leader>fh", builtin.help_tags, { desc = "Search help" })
+  map("n", "<leader>fd", builtin.diagnostics, { desc = "Workspace diagnostics" })
+  map("n", "<leader>fr", builtin.lsp_references, { desc = "LSP references" })
+  map("n", "<leader>fs", builtin.lsp_document_symbols, { desc = "Document symbols" })
+  map("n", "<leader>fk", builtin.keymaps, { desc = "Keymaps" })
+  map("n", "<leader>f.", builtin.resume, { desc = "Resume last picker" })
+  map("n", "<leader><leader>", builtin.oldfiles, { desc = "Recent files" })
 end
 
 return M

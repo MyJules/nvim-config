@@ -39,7 +39,12 @@ function M.setup()
     },
   })
 
+  vim.keymap.set("n", "<S-l>", "<cmd>BufferLineCycleNext<CR>", { desc = "Next file tab" })
+  vim.keymap.set("n", "<S-h>", "<cmd>BufferLineCyclePrev<CR>", { desc = "Previous file tab" })
   vim.keymap.set("n", "<leader>bp", "<cmd>BufferLinePick<CR>", { desc = "Pick file tab" })
+  vim.keymap.set("n", "<leader>bd", function()
+    M.close()
+  end, { desc = "Close file tab without closing splits" })
 end
 
 return M
