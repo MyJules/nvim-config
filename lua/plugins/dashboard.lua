@@ -1,4 +1,5 @@
 local M = {}
+local paths = require("paths")
 
 local WIDTH = 50
 local PANE_GAP = 8
@@ -113,8 +114,8 @@ end
 local function format_file(item, ctx)
   local path = vim.fs.normalize(item.file)
   local cwd = vim.fs.normalize(vim.fn.getcwd())
-  if path:lower():sub(1, #cwd + 1) == (cwd .. "/"):lower() then
-    path = path:sub(#cwd + 2)
+  if path ~= cwd and paths.is_under(path, cwd) then
+    path = path:sub(#cwd + (cwd:sub(-1) == "/" and 1 or 2))
   else
     path = vim.fs.normalize(vim.fn.fnamemodify(path, ":~"))
   end
@@ -132,19 +133,16 @@ local function format_file(item, ctx)
   return { { name, hl = "file" }, { "  " .. dir, hl = "dir" } }
 end
 
-local temp_dir = vim.env.TEMP and (vim.fs.normalize(vim.env.TEMP):lower() .. "/")
-
--- Skip directories (e.g. from `nvim .`) and scratch files under %TEMP%.
+-- Skip directories (e.g. from `nvim .`) and scratch files in the temp dir.
 local function is_file(file)
-  if temp_dir and vim.fs.normalize(file):lower():sub(1, #temp_dir) == temp_dir then
+  if paths.tmpdir and paths.is_under(file, paths.tmpdir) then
     return false
   end
   return vim.fn.isdirectory(file) == 0
 end
 
 local function in_cwd(file)
-  local root = vim.fs.normalize(vim.fn.getcwd()):lower() .. "/"
-  return vim.fs.normalize(file):lower():sub(1, #root) == root
+  return paths.is_under(file, vim.fn.getcwd())
 end
 
 function M.setup()

@@ -38,7 +38,15 @@ local builds = {
         error(result.stderr ~= "" and result.stderr or result.stdout)
       end
     end
-    run({ "cmake", "-S.", "-Bbuild", "-G", "MinGW Makefiles", "-DCMAKE_BUILD_TYPE=Release" })
+    local configure = { "cmake", "-S.", "-Bbuild", "-DCMAKE_BUILD_TYPE=Release" }
+    -- Windows: MinGW Makefiles (gcc), since clang there targets MSVC and needs its
+    -- linker. Elsewhere: cmake's default generator, compiled with clang if present.
+    if vim.fn.has("win32") == 1 then
+      vim.list_extend(configure, { "-G", "MinGW Makefiles" })
+    elseif not vim.env.CC and vim.fn.executable("clang") == 1 then
+      table.insert(configure, "-DCMAKE_C_COMPILER=clang")
+    end
+    run(configure)
     run({ "cmake", "--build", "build", "--config", "Release" })
   end,
   ["nvim-treesitter"] = function()

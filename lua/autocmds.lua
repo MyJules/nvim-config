@@ -54,11 +54,10 @@ vim.api.nvim_create_autocmd("BufEnter", {
       return
     end
 
-    local key = function(path)
-      return vim.fs.normalize(path):lower()
-    end
+    local key = require("paths").key
+    local file_key = key(file)
     local recent = vim.tbl_filter(function(path)
-      return key(path) ~= key(file)
+      return key(path) ~= file_key
     end, vim.v.oldfiles)
     table.insert(recent, 1, file)
     vim.v.oldfiles = recent
