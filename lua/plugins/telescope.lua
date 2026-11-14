@@ -39,6 +39,9 @@ function M.setup()
   map("n", "<leader>fs", builtin.lsp_document_symbols, { desc = "Document symbols" })
   map("n", "<leader>fk", builtin.keymaps, { desc = "Keymaps" })
   map("n", "<leader>f.", builtin.resume, { desc = "Resume last picker" })
+  map("n", "<leader>fc", function()
+    builtin.colorscheme({ enable_preview = true, initial_mode = "insert" })
+  end, { desc = "Preview colorschemes" })
   map("n", "<leader><leader>", builtin.oldfiles, { desc = "Recent files" })
 end
 
