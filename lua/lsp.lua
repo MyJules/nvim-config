@@ -68,8 +68,15 @@ vim.api.nvim_create_autocmd("LspAttach", {
 vim.api.nvim_create_autocmd("LspDetach", {
   group = augroup("LspDetach"),
   callback = function(event)
-    vim.lsp.buf.clear_references()
-    pcall(vim.api.nvim_del_augroup_by_name, "LspDocumentHighlight." .. event.buf)
+    local buf = event.buf
+    -- Keep highlighting if another attached client still provides it.
+    for _, c in ipairs(vim.lsp.get_clients({ bufnr = buf })) do
+      if c.id ~= event.data.client_id and c:supports_method("textDocument/documentHighlight", buf) then
+        return
+      end
+    end
+    vim.lsp.util.buf_clear_references(buf)
+    pcall(vim.api.nvim_del_augroup_by_name, "LspDocumentHighlight." .. buf)
   end,
 })
 

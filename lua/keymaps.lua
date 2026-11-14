@@ -1,7 +1,8 @@
 local map = vim.keymap.set
 
--- Better terminal mode exit
-map("t", "<Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
+-- Double <Esc> leaves terminal mode; a single <Esc> still reaches the program
+-- (Claude Code, lazygit, fzf, ... all use it).
+map("t", "<Esc><Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
 
 -- Navigate vim panes better
 map("n", "<C-k>", "<C-w>k", { desc = "Focus upper split" })
