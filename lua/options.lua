@@ -1,7 +1,22 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
+-- Skip built-in runtime plugins that aren't used.
+for _, plugin in ipairs({
+  "netrw",
+  "netrwPlugin",
+  "gzip",
+  "zipPlugin",
+  "tarPlugin",
+  "tutor_mode_plugin",
+  "remote_plugins",
+  "spellfile_plugin",
+}) do
+  vim.g["loaded_" .. plugin] = 1
+end
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
+vim.g.loaded_python3_provider = 0
 
 local opt = vim.opt
 opt.expandtab = true
@@ -45,7 +60,8 @@ end)
 opt.exrc = true
 
 -- Use PowerShell 7 for :terminal, :! and system() (see :h shell-powershell).
-if vim.fn.has("win32") == 1 and vim.fn.executable("pwsh") == 1 then
+-- (No executable("pwsh") check: searching PATH costs ~6 ms at startup on Windows.)
+if vim.fn.has("win32") == 1 then
   opt.shell = "pwsh"
   opt.shellcmdflag = "-NoLogo -NonInteractive -ExecutionPolicy RemoteSigned -Command "
     .. "[Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();"

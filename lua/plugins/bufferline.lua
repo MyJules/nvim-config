@@ -12,22 +12,29 @@ function M.setup()
       right_mouse_command = M.close,
       always_show_bufferline = true,
       separator_style = "thin",
-      indicator = { style = "underline" },
-      show_buffer_icons = false,
+      indicator = { icon = "▎", style = "icon" },
+      show_buffer_icons = true,
       show_close_icon = false,
-      buffer_close_icon = "x",
-      modified_icon = "+",
-      left_trunc_marker = "<",
-      right_trunc_marker = ">",
+      buffer_close_icon = "󰅖",
+      modified_icon = "●",
+      left_trunc_marker = "",
+      right_trunc_marker = "",
       diagnostics = "nvim_lsp",
-      diagnostics_indicator = function(count)
-        return " " .. count
+      diagnostics_indicator = function(_, _, diag)
+        local parts = {}
+        if diag.error then
+          table.insert(parts, " " .. diag.error)
+        end
+        if diag.warning then
+          table.insert(parts, " " .. diag.warning)
+        end
+        return table.concat(parts, " ")
       end,
       offsets = {
         {
           filetype = "NvimTree",
-          text = "Files",
-          text_align = "center",
+          text = "  Explorer",
+          text_align = "left",
           highlight = "Directory",
           separator = true,
         },

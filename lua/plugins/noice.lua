@@ -2,18 +2,8 @@ local M = {}
 
 function M.setup()
   require("noice").setup({
-    cmdline = {
-      format = {
-        cmdline = { icon = ":", title = " Command " },
-        search_down = { icon = "/" },
-        search_up = { icon = "?" },
-        filter = { icon = "$" },
-        lua = { icon = "lua" },
-        help = { icon = "?" },
-        input = { icon = ">" },
-      },
-    },
-    popupmenu = { backend = "nui", kind_icons = false },
+    cmdline = { view = "cmdline_popup" },
+    popupmenu = { backend = "nui" },
     messages = { enabled = false },
     notify = { enabled = false },
     lsp = {

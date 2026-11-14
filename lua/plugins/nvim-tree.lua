@@ -2,46 +2,43 @@ local M = {}
 
 function M.setup()
   require("nvim-tree").setup({
-    hijack_netrw = false,
+    -- netrw is disabled in options.lua; this also lets `nvim <dir>` open the tree.
+    disable_netrw = true,
     view = {
-      width = 26,
+      width = 30,
       signcolumn = "no",
     },
     renderer = {
       group_empty = true,
       root_folder_label = ":t",
-      add_trailing = true,
       highlight_git = "name",
       highlight_opened_files = "name",
       highlight_modified = "name",
-      indent_markers = {
-        enable = true,
-        icons = {
-          corner = "`",
-          edge = "|",
-          item = "|",
-          bottom = "-",
-          none = " ",
-        },
-      },
+      indent_markers = { enable = true },
       icons = {
-        web_devicons = {
-          file = { enable = false },
-          folder = { enable = false },
-        },
-        symlink_arrow = " -> ",
         show = {
-          file = false,
-          folder = false,
-          folder_arrow = false,
-          git = false,
-          modified = false,
-          hidden = false,
-          diagnostics = false,
-          bookmarks = false,
+          file = true,
+          folder = true,
+          folder_arrow = true,
+          git = true,
+          modified = true,
+          diagnostics = true,
+          bookmarks = true,
+        },
+        glyphs = {
+          git = {
+            unstaged = "",
+            staged = "",
+            unmerged = "",
+            renamed = "➜",
+            untracked = "",
+            deleted = "",
+            ignored = "◌",
+          },
         },
       },
     },
+    diagnostics = { enable = true, show_on_dirs = true },
     modified = { enable = true },
     filters = { dotfiles = false },
     update_focused_file = { enable = true },
