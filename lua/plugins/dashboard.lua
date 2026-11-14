@@ -152,15 +152,25 @@ function M.setup()
     -- Files over 1.5 MB get filetype "bigfile": no treesitter, LSP, folds, etc.
     bigfile = { enabled = true },
     lazygit = { enabled = true },
+    -- Fuzzy finder (keymaps in plugins/picker.lua); also replaces vim.ui.select.
+    picker = {
+      enabled = true,
+      ui_select = true,
+      layout = { preset = "telescope" },
+    },
+    -- Floating vim.ui.input (rename, commit message) and vim.notify popups,
+    -- so long messages don't end in "Press ENTER".
+    input = { enabled = true },
+    notifier = { enabled = true, timeout = 3000 },
     dashboard = {
       enabled = true,
       width = WIDTH,
       pane_gap = PANE_GAP,
       preset = {
         keys = {
-          { icon = " ", key = "f", desc = "Find file", action = run("Telescope find_files") },
-          { icon = " ", key = "g", desc = "Search text", action = run("Telescope live_grep") },
-          { icon = " ", key = "r", desc = "Recent files", action = run("Telescope oldfiles") },
+          { icon = " ", key = "f", desc = "Find file", action = run(function() Snacks.picker.files() end) },
+          { icon = " ", key = "g", desc = "Search text", action = run(function() Snacks.picker.grep() end) },
+          { icon = " ", key = "r", desc = "Recent files", action = run(function() require("plugins.picker").recent() end) },
           {
             icon = " ",
             key = "s",
@@ -176,7 +186,7 @@ function M.setup()
             key = "c",
             desc = "Config",
             action = run(function()
-              require("telescope.builtin").find_files({ cwd = vim.fn.stdpath("config") })
+              Snacks.picker.files({ cwd = vim.fn.stdpath("config") })
             end),
           },
           { icon = "󰚰 ", key = "u", desc = "Update plugins", action = run("PackUpdate") },

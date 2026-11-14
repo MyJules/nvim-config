@@ -4,7 +4,10 @@ function M.setup()
   -- Command box and its completion list share a width and column, and the list's
   -- top border sits on the box's bottom border, so the two read as one panel.
   local width = 64
-  local row = math.max(2, math.floor(vim.o.lines * 0.25))
+  local function popup_row()
+    return math.max(2, math.floor(vim.o.lines * 0.25))
+  end
+  local row = popup_row()
 
   require("noice").setup({
     cmdline = {
@@ -64,6 +67,18 @@ function M.setup()
         },
       },
     },
+  })
+
+  -- Keep the box a quarter of the way down after the terminal is resized
+  -- (noice builds a new view when its options change).
+  vim.api.nvim_create_autocmd("VimResized", {
+    group = vim.api.nvim_create_augroup("NoiceCmdlineRow", { clear = true }),
+    callback = function()
+      local views = require("noice.config").options.views
+      local r = popup_row()
+      views.cmdline_popup.position.row = r
+      views.cmdline_popupmenu.position.row = r + 2
+    end,
   })
 
   vim.opt.wildmode = { "noselect:lastused", "full" }

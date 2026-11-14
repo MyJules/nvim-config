@@ -18,7 +18,7 @@ function M.setup()
       changedelete = { text = "▎" },
       untracked = { text = "▎" },
     },
-    -- Above diagnostics (10): those still show via line-number color and virtual text.
+    -- With signcolumn=yes:2 both fit; this keeps git signs in the first cell.
     sign_priority = 20,
     preview_config = { border = "rounded" },
     on_attach = function(buf)

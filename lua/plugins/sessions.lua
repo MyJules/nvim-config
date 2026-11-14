@@ -17,6 +17,16 @@ function M.setup()
       pcall(function()
         require("trouble").close()
       end)
+      -- Diffview tabs would come back as empty diffview:// buffers.
+      if package.loaded["diffview.lib"] then
+        local lib = require("diffview.lib")
+        for _, view in ipairs(vim.list_slice(lib.views)) do
+          pcall(function()
+            view:close()
+            lib.dispose_view(view)
+          end)
+        end
+      end
     end,
   })
 

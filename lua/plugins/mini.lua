@@ -3,7 +3,7 @@ local M = {}
 
 function M.icons()
   require("mini.icons").setup()
-  -- bufferline, nvim-tree, lualine and telescope expect nvim-web-devicons.
+  -- bufferline, nvim-tree and lualine expect nvim-web-devicons.
   MiniIcons.mock_nvim_web_devicons()
 end
 
@@ -39,7 +39,19 @@ function M.setup()
     draw = { delay = 50, animation = require("mini.indentscope").gen_animation.none() },
     options = { try_as_border = true },
   })
-  local disabled_ft = { "help", "NvimTree", "snacks_dashboard", "trouble", "noice", "TelescopePrompt", "TelescopeResults", "bigfile" }
+  local disabled_ft = {
+    "help",
+    "NvimTree",
+    "trouble",
+    "noice",
+    "bigfile",
+    "snacks_dashboard",
+    "snacks_picker_input",
+    "snacks_picker_list",
+    "snacks_picker_preview",
+    "snacks_notif",
+    "snacks_input",
+  }
   vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("IndentScopeDisable", { clear = true }),
     pattern = disabled_ft,

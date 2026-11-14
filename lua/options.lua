@@ -27,7 +27,8 @@ opt.termguicolors = true
 opt.background = "dark"
 opt.number = true
 opt.relativenumber = true
-opt.signcolumn = "yes"
+-- Two cells: git signs and diagnostic signs side by side instead of fighting for one.
+opt.signcolumn = "yes:2"
 opt.cursorline = true
 opt.scrolloff = 6
 opt.showmode = false
@@ -86,9 +87,11 @@ if vim.fn.has("win32") == 1 then
 end
 
 vim.diagnostic.config({
-  virtual_text = true,
-  -- The sign column is one cell wide and gitsigns outranks diagnostics there,
-  -- so diagnostics also color the line number (plus virtual text) to stay visible.
+  -- Short message at the end of other lines; the full message (all of them,
+  -- wrapped) under the cursor line, so it doesn't appear twice there.
+  virtual_text = { current_line = false },
+  virtual_lines = { current_line = true },
+  -- Diagnostics also color the line number, so they stand out at a glance.
   signs = {
     numhl = {
       [vim.diagnostic.severity.ERROR] = "DiagnosticSignError",

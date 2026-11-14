@@ -21,7 +21,7 @@ function M.setup()
       { mode = "n", keys = "<Leader>f", desc = "+Find" },
       { mode = { "n", "x" }, keys = "<Leader>g", desc = "+Git" },
       { mode = { "n", "x" }, keys = "<Leader>l", desc = "+LSP" },
-      { mode = "n", keys = "<Leader>s", desc = "+Screen" },
+      { mode = "n", keys = "<Leader>s", desc = "+Start" },
       { mode = "n", keys = "<Leader>q", desc = "+Session" },
       { mode = "n", keys = "<Leader>x", desc = "+Trouble" },
       miniclue.gen_clues.square_brackets(),

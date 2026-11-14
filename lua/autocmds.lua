@@ -34,9 +34,10 @@ vim.api.nvim_create_autocmd("VimResized", {
   desc = "Equalize splits when the terminal is resized",
   callback = function()
     -- :tabdo leaves the last tab current; come back to the one we were on.
+    -- noautocmd: visiting each tab shouldn't fire BufEnter/WinEnter handlers.
     local cur = vim.fn.tabpagenr()
-    vim.cmd("tabdo wincmd =")
-    vim.cmd("tabnext " .. cur)
+    vim.cmd("noautocmd tabdo wincmd =")
+    vim.cmd("noautocmd tabnext " .. cur)
   end,
 })
 
@@ -85,11 +86,23 @@ local function checktime(buf)
   end
 end
 
-vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "TermLeave", "TermClose" }, {
-  group = augroup("AutoReload"),
+local reload_group = augroup("AutoReload")
+vim.api.nvim_create_autocmd({ "FocusGained", "CursorHold", "TermLeave", "TermClose" }, {
+  group = reload_group,
   desc = "Check open files for changes on disk",
   callback = function()
     checktime()
+  end,
+})
+-- Switching buffers only needs to check the one being entered; the watchers
+-- below cover the rest.
+vim.api.nvim_create_autocmd("BufEnter", {
+  group = reload_group,
+  desc = "Check the entered file for changes on disk",
+  callback = function(event)
+    if vim.bo[event.buf].buftype == "" then
+      checktime(event.buf)
+    end
   end,
 })
 

@@ -10,9 +10,6 @@ local plugins = {
   { src = github("rebelot/kanagawa.nvim") },
   { src = github("rose-pine/neovim"), name = "rose-pine" },
   { src = github("nvim-tree/nvim-tree.lua") },
-  { src = github("nvim-lua/plenary.nvim") },
-  { src = github("nvim-telescope/telescope.nvim"), version = "v0.2.2" },
-  { src = github("nvim-telescope/telescope-fzf-native.nvim") },
   { src = github("nvim-lualine/lualine.nvim") },
   { src = github("akinsho/bufferline.nvim"), version = "v4.9.1" },
   { src = github("nvim-mini/mini.nvim") },
@@ -31,27 +28,16 @@ M.list = plugins
 
 -- Post-install/update build steps. Must be registered before vim.pack.add().
 local builds = {
-  ["telescope-fzf-native.nvim"] = function(path)
-    local function run(cmd)
-      local result = vim.system(cmd, { cwd = path }):wait()
-      if result.code ~= 0 then
-        error(result.stderr ~= "" and result.stderr or result.stdout)
-      end
+  -- Parsers must match the plugin's queries, so update them with it. A fresh
+  -- install is skipped: setup_deferred() installs the missing parsers.
+  ["nvim-treesitter"] = function(_, kind)
+    if kind ~= "update" then
+      return
     end
-    local configure = { "cmake", "-S.", "-Bbuild", "-DCMAKE_BUILD_TYPE=Release" }
-    -- Windows: MinGW Makefiles (gcc), since clang there targets MSVC and needs its
-    -- linker. Elsewhere: cmake's default generator, compiled with clang if present.
-    if vim.fn.has("win32") == 1 then
-      vim.list_extend(configure, { "-G", "MinGW Makefiles" })
-    elseif not vim.env.CC and vim.fn.executable("clang") == 1 then
-      table.insert(configure, "-DCMAKE_C_COMPILER=clang")
-    end
-    run(configure)
-    run({ "cmake", "--build", "build", "--config", "Release" })
-  end,
-  ["nvim-treesitter"] = function()
     vim.schedule(function()
-      pcall(vim.cmd, "TSUpdate")
+      -- :TSUpdate only exists once the plugin is on the runtimepath.
+      vim.cmd.packadd("nvim-treesitter")
+      vim.cmd("TSUpdate")
     end)
   end,
 }
@@ -65,7 +51,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
     end
     local build = builds[data.spec.name]
     if build then
-      local ok, err = pcall(build, data.path)
+      local ok, err = pcall(build, data.path, data.kind)
       if not ok then
         vim.notify(("Build failed for %s:\n%s"):format(data.spec.name, err), vim.log.levels.ERROR)
       end
@@ -94,7 +80,7 @@ local steps = {
   { { "lualine.nvim" }, "plugins.lualine" },
   { { "bufferline.nvim" }, "plugins.bufferline" },
   { { "nvim-treesitter", "nvim-treesitter-textobjects" }, "plugins.treesitter", "setup_deferred" },
-  { { "plenary.nvim", "telescope.nvim", "telescope-fzf-native.nvim" }, "plugins.telescope" },
+  { {}, "plugins.picker" },
   { { "nvim-tree.lua" }, "plugins.nvim-tree" },
   { { "gitsigns.nvim" }, "plugins.gitsigns" },
   { { "diffview.nvim" }, "plugins.diffview" },
@@ -108,7 +94,7 @@ local steps = {
 }
 local next_step = 1
 
-local function run_step(step)
+local function load_step(step)
   local packs, module, fn = step[1], step[2], step[3] or "setup"
   if module == "plugins.nvim-tree" and package.loaded["nvim-tree"] then
     return -- already loaded for `nvim <dir>`
@@ -117,6 +103,14 @@ local function run_step(step)
   local mod = require(module)
   if type(mod) == "table" and mod[fn] then
     mod[fn]()
+  end
+end
+
+-- A failing step is reported, not fatal: the steps after it still load.
+local function run_step(step)
+  local ok, err = pcall(load_step, step)
+  if not ok then
+    vim.notify(("Failed to load %s:\n%s"):format(step[2], err), vim.log.levels.ERROR)
   end
 end
 
@@ -161,6 +155,24 @@ function M.setup()
   vim.api.nvim_create_user_command("PackUpdate", function(cmd)
     vim.pack.update(#cmd.fargs > 0 and cmd.fargs or nil)
   end, { nargs = "*", desc = "Update plugins (all, or the named ones)" })
+
+  vim.api.nvim_create_user_command("PackClean", function()
+    -- Installed but no longer in the list above (so not added this session).
+    local unused = {}
+    for _, p in ipairs(vim.pack.get(nil, { info = false })) do
+      if not p.active then
+        unused[#unused + 1] = p.spec.name
+      end
+    end
+    if #unused == 0 then
+      vim.notify("No unused plugins")
+      return
+    end
+    local choice = vim.fn.confirm("Delete unused plugins?\n" .. table.concat(unused, "\n"), "&Yes\n&No", 2)
+    if choice == 1 then
+      vim.pack.del(unused)
+    end
+  end, { desc = "Delete installed plugins that are no longer configured" })
 
   packadd(eager)
   require("theme").setup()

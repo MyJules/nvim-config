@@ -13,6 +13,10 @@ M.parsers = {
   "cmake",
   "bash",
   "powershell",
+  "regex", -- noice highlights / and ? searches with it
+  "diff",
+  "gitcommit",
+  "git_rebase",
 }
 
 -- Highlighting and folds use Neovim's built-in treesitter and the installed parsers
