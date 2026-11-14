@@ -73,7 +73,9 @@ opt.exrc = true
 -- (No executable("pwsh") check: searching PATH costs ~6 ms at startup on Windows.)
 if vim.fn.has("win32") == 1 then
   opt.shell = "pwsh"
-  opt.shellcmdflag = "-NoLogo -NonInteractive -ExecutionPolicy RemoteSigned -Command "
+  -- -NoProfile: :! and system() skip loading $PROFILE (often 100s of ms per call).
+  -- The interactive :terminal doesn't use this flag, so it still gets the profile.
+  opt.shellcmdflag = "-NoLogo -NoProfile -NonInteractive -ExecutionPolicy RemoteSigned -Command "
     .. "[Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new();"
     .. "$PSDefaultParameterValues['Out-File:Encoding']='utf8';"
     .. "Remove-Alias -Force -ErrorAction SilentlyContinue tee;"
@@ -85,7 +87,16 @@ end
 
 vim.diagnostic.config({
   virtual_text = true,
-  signs = true,
+  -- The sign column is one cell wide and gitsigns outranks diagnostics there,
+  -- so diagnostics also color the line number (plus virtual text) to stay visible.
+  signs = {
+    numhl = {
+      [vim.diagnostic.severity.ERROR] = "DiagnosticSignError",
+      [vim.diagnostic.severity.WARN] = "DiagnosticSignWarn",
+      [vim.diagnostic.severity.INFO] = "DiagnosticSignInfo",
+      [vim.diagnostic.severity.HINT] = "DiagnosticSignHint",
+    },
+  },
   underline = true,
   severity_sort = true,
   float = { source = "if_many" },

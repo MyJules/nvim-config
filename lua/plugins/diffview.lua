@@ -98,6 +98,36 @@ function M.unpushed()
   vim.cmd("DiffviewFileHistory --range=@{upstream}..HEAD")
 end
 
+-- Neovim inherits PATH from whatever launched it, so a freshly installed lazygit
+-- may be missing until that app restarts. Fall back to winget's install folder.
+local function find_lazygit()
+  if vim.fn.executable("lazygit") == 1 then
+    return true
+  end
+  if vim.fn.has("win32") == 1 and vim.env.LOCALAPPDATA then
+    local dir = vim.fs.joinpath(vim.env.LOCALAPPDATA, "Microsoft", "WinGet", "Packages")
+    for name in vim.fs.dir(dir) do
+      if vim.startswith(name, "JesseDuffield.lazygit") then
+        vim.env.PATH = vim.fs.joinpath(dir, name) .. ";" .. vim.env.PATH
+        return vim.fn.executable("lazygit") == 1
+      end
+    end
+  end
+  return false
+end
+
+function M.lazygit(view)
+  if not find_lazygit() then
+    vim.notify("lazygit not found (install it: winget install JesseDuffield.lazygit)", vim.log.levels.ERROR)
+    return
+  end
+  if view then
+    Snacks.lazygit[view]()
+  else
+    Snacks.lazygit()
+  end
+end
+
 function M.setup()
   local actions = require("diffview.actions")
   local commit = { "n", "cc", function() M.commit(false) end, { desc = "Commit staged" } }
@@ -143,6 +173,9 @@ function M.setup()
   map("n", "<leader>gP", M.push, { desc = "Push" })
   map("n", "<leader>gF", M.pull, { desc = "Pull (fast-forward only)" })
   map("n", "<leader>gl", M.unpushed, { desc = "Unpushed commits" })
+  -- lazygit in a float (snacks): rebase, branches, stash, cherry-pick, conflicts.
+  map("n", "<leader>gg", function() M.lazygit() end, { desc = "Lazygit" })
+  map("n", "<leader>gL", function() M.lazygit("log_file") end, { desc = "Lazygit file log" })
 end
 
 return M

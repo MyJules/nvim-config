@@ -39,7 +39,7 @@ function M.setup()
     draw = { delay = 50, animation = require("mini.indentscope").gen_animation.none() },
     options = { try_as_border = true },
   })
-  local disabled_ft = { "help", "NvimTree", "snacks_dashboard", "trouble", "noice", "TelescopePrompt", "TelescopeResults" }
+  local disabled_ft = { "help", "NvimTree", "snacks_dashboard", "trouble", "noice", "TelescopePrompt", "TelescopeResults", "bigfile" }
   vim.api.nvim_create_autocmd("FileType", {
     group = vim.api.nvim_create_augroup("IndentScopeDisable", { clear = true }),
     pattern = disabled_ft,

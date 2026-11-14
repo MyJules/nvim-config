@@ -19,6 +19,10 @@ vim.api.nvim_create_autocmd("BufReadPost", {
       return
     end
     local mark = vim.api.nvim_buf_get_mark(event.buf, '"')
+    -- The buffer may be read without being in the current window (e.g. :badd).
+    if vim.api.nvim_get_current_buf() ~= event.buf then
+      return
+    end
     if mark[1] > 0 and mark[1] <= vim.api.nvim_buf_line_count(event.buf) then
       pcall(vim.api.nvim_win_set_cursor, 0, mark)
     end
@@ -28,7 +32,12 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 vim.api.nvim_create_autocmd("VimResized", {
   group = augroup("BalanceSplits"),
   desc = "Equalize splits when the terminal is resized",
-  command = "tabdo wincmd =",
+  callback = function()
+    -- :tabdo leaves the last tab current; come back to the one we were on.
+    local cur = vim.fn.tabpagenr()
+    vim.cmd("tabdo wincmd =")
+    vim.cmd("tabnext " .. cur)
+  end,
 })
 
 -- Keep v:oldfiles current within the session so the recent files picker

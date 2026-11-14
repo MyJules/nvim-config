@@ -150,6 +150,9 @@ function M.setup()
   local project = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
 
   require("snacks").setup({
+    -- Files over 1.5 MB get filetype "bigfile": no treesitter, LSP, folds, etc.
+    bigfile = { enabled = true },
+    lazygit = { enabled = true },
     dashboard = {
       enabled = true,
       width = WIDTH,
