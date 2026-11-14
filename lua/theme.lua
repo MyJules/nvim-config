@@ -62,7 +62,21 @@ local function fallback_highlights()
     set(0, "DashboardLogo" .. i, { fg = get(group, "fg"), bold = true })
   end
   set(0, "DashboardKeyBadge", { fg = get("Constant", "fg"), bg = get("CursorLine", "bg"), bold = true })
-  set(0, "NoiceCmdlinePopupTitle", { fg = get("Normal", "bg"), bg = get("Function", "fg"), bold = true })
+
+  -- Command line popup (noice): same layout as the tokyonight tuning, so the box,
+  -- its border and the completion list share the theme's float background.
+  local float_bg = get("NormalFloat", "bg") or get("Normal", "bg")
+  local accent = get("Function", "fg")
+  set(0, "NoiceCmdlinePopup", { fg = get("NormalFloat", "fg") or get("Normal", "fg"), bg = float_bg })
+  set(0, "NoiceCmdlinePopupBorder", { fg = accent, bg = float_bg })
+  set(0, "NoiceCmdlinePopupTitle", { fg = float_bg, bg = accent, bold = true })
+  set(0, "NoiceCmdlineIcon", { fg = get("Constant", "fg") })
+  local kinds = { Search = "DiagnosticWarn", Lua = "Statement", Filter = "String" }
+  for kind, source in pairs(kinds) do
+    local fg = get(source, "fg")
+    set(0, "NoiceCmdlinePopupBorder" .. kind, { fg = fg, bg = float_bg })
+    set(0, "NoiceCmdlineIcon" .. kind, { fg = fg })
+  end
 end
 
 function M.setup()
