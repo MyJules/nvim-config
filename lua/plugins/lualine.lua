@@ -3,7 +3,7 @@ local M = {}
 function M.setup()
   require("lualine").setup({
     options = {
-      theme = "tokyonight",
+      theme = "auto", -- follows the active colorscheme
       globalstatus = true,
       icons_enabled = true,
       component_separators = { left = "", right = "" },

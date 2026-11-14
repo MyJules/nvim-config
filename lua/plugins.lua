@@ -6,6 +6,9 @@ end
 
 local plugins = {
   { src = github("folke/tokyonight.nvim") },
+  { src = github("catppuccin/nvim"), name = "catppuccin" },
+  { src = github("rebelot/kanagawa.nvim") },
+  { src = github("rose-pine/neovim"), name = "rose-pine" },
   { src = github("nvim-tree/nvim-tree.lua") },
   { src = github("nvim-lua/plenary.nvim") },
   { src = github("nvim-telescope/telescope.nvim"), version = "v0.2.2" },

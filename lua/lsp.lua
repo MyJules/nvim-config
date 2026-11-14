@@ -73,16 +73,4 @@ vim.api.nvim_create_autocmd("LspDetach", {
   end,
 })
 
--- Format C/C++ on save, but only in projects that opt in with a .clang-format file.
-vim.api.nvim_create_autocmd("BufWritePre", {
-  group = augroup("ClangFormatOnSave"),
-  pattern = { "*.c", "*.h", "*.cpp", "*.hpp", "*.cc", "*.cxx", "*.hh" },
-  callback = function(event)
-    if not vim.fs.root(event.buf, { ".clang-format", "_clang-format" }) then
-      return
-    end
-    vim.lsp.buf.format({ bufnr = event.buf, name = "clangd", timeout_ms = 2000 })
-  end,
-})
-
 vim.lsp.enable({ "clangd", "lua_ls" })

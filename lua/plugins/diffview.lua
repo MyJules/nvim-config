@@ -35,6 +35,34 @@ function M.commit(amend)
   end)
 end
 
+-- Run a git command in the background and report the result.
+local function git_async(cmd, label)
+  vim.notify(label .. "...")
+  vim.system(cmd, { text = true }, function(res)
+    vim.schedule(function()
+      local out = vim.trim((res.stderr or "") .. "\n" .. (res.stdout or ""))
+      if res.code == 0 then
+        vim.notify(label .. " done" .. (out ~= "" and (": " .. (out:match("[^\n]+$") or "")) or ""))
+      else
+        vim.notify(label .. " failed:\n" .. out, vim.log.levels.ERROR)
+      end
+      if package.loaded["diffview.lib"] and require("diffview.lib").get_current_view() then
+        require("diffview.actions").refresh_files()
+      end
+    end)
+  end)
+end
+
+function M.push()
+  -- First push of a new branch: set its upstream automatically.
+  local has_upstream = vim.system({ "git", "rev-parse", "--abbrev-ref", "@{upstream}" }):wait().code == 0
+  git_async(has_upstream and { "git", "push" } or { "git", "push", "-u", "origin", "HEAD" }, "Push")
+end
+
+function M.pull()
+  git_async({ "git", "pull", "--ff-only" }, "Pull")
+end
+
 function M.setup()
   local actions = require("diffview.actions")
   local commit = { "n", "cc", function() M.commit(false) end, { desc = "Commit staged" } }
@@ -77,7 +105,9 @@ function M.setup()
   map("x", "<leader>gh", ":DiffviewFileHistory<CR>", { desc = "History of selection" })
   map("n", "<leader>gc", function() M.commit(false) end, { desc = "Commit staged" })
   map("n", "<leader>gC", function() M.commit(true) end, { desc = "Amend last commit" })
-  map("n", "<leader>gl", "<Cmd>DiffviewFileHistory --range=@{upstream}..HEAD<CR>", { desc = "Unpushed commits" })
+  map("n", "<leader>gP", M.push, { desc = "Push" })
+  map("n", "<leader>gF", M.pull, { desc = "Pull (fast-forward only)" })
+  map("n", "<leader>gl","<Cmd>DiffviewFileHistory --range=@{upstream}..HEAD<CR>", { desc = "Unpushed commits" })
 end
 
 return M

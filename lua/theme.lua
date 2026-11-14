@@ -1,4 +1,69 @@
+-- Colorschemes: tokyonight (always loaded) plus a few extras that are only added
+-- to the runtimepath when used. The last theme you pick is remembered.
 local M = {}
+
+-- Extra theme plugins: package name -> colorscheme name prefix.
+M.extras = {
+  { pack = "catppuccin", prefix = "catppuccin" },
+  { pack = "kanagawa.nvim", prefix = "kanagawa" },
+  { pack = "rose-pine", prefix = "rose-pine" },
+}
+
+local default = "tokyonight"
+local state_file = vim.fn.stdpath("state") .. "/colorscheme"
+
+local function read_saved()
+  local f = io.open(state_file, "r")
+  if not f then
+    return nil
+  end
+  local name = vim.trim(f:read("*a") or "")
+  f:close()
+  return name ~= "" and name or nil
+end
+
+local function save(name)
+  local f = io.open(state_file, "w")
+  if f then
+    f:write(name)
+    f:close()
+  end
+end
+
+-- Make the extra themes visible to :colorscheme and the picker.
+function M.load_all()
+  for _, t in ipairs(M.extras) do
+    pcall(vim.cmd.packadd, t.pack)
+  end
+end
+
+local function load_for(name)
+  for _, t in ipairs(M.extras) do
+    if vim.startswith(name, t.prefix) then
+      pcall(vim.cmd.packadd, t.pack)
+    end
+  end
+end
+
+local function get(name, attr)
+  local hl = vim.api.nvim_get_hl(0, { name = name, link = false })
+  return hl[attr]
+end
+
+-- Our custom groups are tuned for tokyonight in on_highlights below. For other
+-- themes, derive them from the theme's own colors so nothing is left unstyled.
+local function fallback_highlights()
+  if vim.startswith(vim.g.colors_name or "", "tokyonight") then
+    return
+  end
+  local set = vim.api.nvim_set_hl
+  local logo = { "Function", "Function", "Statement", "Statement", "Type", "Type" }
+  for i, group in ipairs(logo) do
+    set(0, "DashboardLogo" .. i, { fg = get(group, "fg"), bold = true })
+  end
+  set(0, "DashboardKeyBadge", { fg = get("Constant", "fg"), bg = get("CursorLine", "bg"), bold = true })
+  set(0, "NoiceCmdlinePopupTitle", { fg = get("Normal", "bg"), bg = get("Function", "fg"), bold = true })
+end
 
 function M.setup()
   require("tokyonight").setup({
@@ -47,7 +112,22 @@ function M.setup()
       hl.NoiceCmdlineIconFilter = { fg = c.green }
     end,
   })
-  vim.cmd.colorscheme("tokyonight")
+
+  vim.api.nvim_create_autocmd("ColorScheme", {
+    group = vim.api.nvim_create_augroup("ThemePersist", { clear = true }),
+    callback = function(event)
+      fallback_highlights()
+      -- Fires during picker previews too; cancelling re-applies the old theme,
+      -- so the file always ends up holding the theme actually in use.
+      save(event.match)
+    end,
+  })
+
+  local saved = read_saved() or default
+  load_for(saved)
+  if not pcall(vim.cmd.colorscheme, saved) then
+    vim.cmd.colorscheme(default)
+  end
 end
 
 return M
