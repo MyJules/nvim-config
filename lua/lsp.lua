@@ -33,16 +33,32 @@ vim.api.nvim_create_autocmd("LspAttach", {
       end, "Toggle inlay hints")
     end
 
-    if client.name == "clangd" then
+    if client.name == "clice" then
       map("n", "<leader>ls", function()
-        local params = vim.lsp.util.make_text_document_params(buf)
-        client:request("textDocument/switchSourceHeader", params, function(err, result)
+        local function open(uri)
+          vim.cmd.edit(vim.fn.fnameescape(vim.uri_to_fname(uri)))
+        end
+        client:request("clice/counterparts", { uri = vim.uri_from_bufnr(buf) }, function(err, result)
           if err then
             vim.notify(err.message, vim.log.levels.ERROR)
           elseif not result then
             vim.notify("No matching source/header file", vim.log.levels.WARN)
+          elseif result.preferred and result.preferred ~= vim.NIL then
+            open(result.preferred)
+          elseif #(result.candidates or {}) == 0 then
+            vim.notify("No matching source/header file", vim.log.levels.WARN)
           else
-            vim.cmd.edit(vim.fn.fnameescape(vim.uri_to_fname(result)))
+            vim.ui.select(result.candidates, {
+              prompt = "File to open",
+              format_item = function(c)
+                local name = vim.fn.fnamemodify(vim.uri_to_fname(c.uri), ":~:.")
+                return ("%s  (%s)"):format(name, table.concat(c.reasons or {}, ", "))
+              end,
+            }, function(choice)
+              if choice then
+                open(choice.uri)
+              end
+            end)
           end
         end, buf)
       end, "Switch source/header")
@@ -80,4 +96,4 @@ vim.api.nvim_create_autocmd("LspDetach", {
   end,
 })
 
-vim.lsp.enable({ "clangd", "lua_ls" })
+vim.lsp.enable({ "clice", "lua_ls" })
