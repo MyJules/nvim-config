@@ -129,7 +129,7 @@ function M.setup()
 
   local map = vim.keymap.set
   map("n", "<leader>gv", "<Cmd>DiffviewOpen<CR>", { desc = "Review all changes (diffview)" })
-  map("n", "<leader>gV", "<Cmd>DiffviewOpen HEAD~1<CR>", { desc = "Review last commit" })
+  map("n", "<leader>gV", "<Cmd>DiffviewOpen HEAD~1..HEAD<CR>", { desc = "Review last commit" })
   map("n", "<leader>gh", "<Cmd>DiffviewFileHistory %<CR>", { desc = "File history" })
   map("n", "<leader>gH", "<Cmd>DiffviewFileHistory<CR>", { desc = "Repo history" })
   map("x", "<leader>gh", ":DiffviewFileHistory<CR>", { desc = "History of selection" })

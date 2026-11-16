@@ -54,7 +54,13 @@ function M.setup()
       if not pcall(vim.treesitter.start, event.buf, lang) then
         return
       end
-      vim.bo[event.buf].indentexpr = "v:lua.require'plugins.treesitter'.indentexpr()"
+      -- Only where the language has indent rules; otherwise every line would indent
+      -- to 0 and override the filetype's own indent script (vim, gitcommit, diff, ...).
+      -- Parser queries are installed into stdpath("data")/site, so this works before
+      -- nvim-treesitter is loaded.
+      if #vim.api.nvim_get_runtime_file("queries/" .. lang .. "/indents.scm", false) > 0 then
+        vim.bo[event.buf].indentexpr = "v:lua.require'plugins.treesitter'.indentexpr()"
+      end
       set_folds(event.buf)
     end,
   })
